@@ -96,7 +96,6 @@ const handleGeoData = function (data) {
   if (data.error) throw new Error(data.error.description);
   // if coords are not ok
   console.log(`You are in ${data.city}, ${data.country}`);
-  //   getCountryAndNeighbours(`data.country`.toLocaleLowerCase);
   return data.country;
 };
 
