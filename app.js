@@ -2,6 +2,7 @@
 
 const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
+
 const wait = function (seconds) {
   return new Promise(function (resolve) {
     setTimeout(resolve, seconds * 1000);
@@ -17,6 +18,7 @@ const getJSON = function (url, errorMsg = 'Something went wrong') {
 };
 
 const renderCountry = function (data, className = '') {
+  wait(1);
   const html = `
   <article class="country ${className}">
     <img class="country__img" src="${data.flags.png}" />
@@ -37,6 +39,7 @@ const renderCountry = function (data, className = '') {
   `;
   countriesContainer.insertAdjacentHTML('beforeend', html);
   countriesContainer.style.opacity = 1;
+  wait(1);
 };
 // Error handling
 const renderError = function (msg) {
@@ -52,16 +55,19 @@ const getCountryData = function (country) {
       console.log(data);
       renderCountry(data[0]);
       const neighbour = data[0].borders;
+      wait(2);
       if (!neighbour) throw new Error('No neighbour found!');
       // neighbour countries
-      return neighbour.forEach(code =>
+      return neighbour.forEach(code => {
         getJSON(
           `https://restcountries.com/v3.1/alpha/${code}`,
           `Country not found `
-        )
-          .then(data => renderCountry(data[0], 'neighbour'))
-          .then()
-      );
+        ).then(data => {
+          setTimeout(() => {
+            renderCountry(data[0], 'neighbour');
+          }, 1000);
+        });
+      });
     })
     .catch(error => {
       renderError(`Something went Wrong?? => ${error.message}`);
@@ -69,6 +75,7 @@ const getCountryData = function (country) {
 };
 
 const whereAmI = function (lat, lng) {
+  wait(1);
   getGeoData(lat, lng)
     .then(handleGeoData)
     .then(getCountryData)
